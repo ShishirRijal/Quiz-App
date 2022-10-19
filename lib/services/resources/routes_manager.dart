@@ -18,7 +18,8 @@ class RouteGenerator {
       case Routes.forgotPasswordRoute:
         return MaterialPageRoute(
             builder: (context) => const ForgotPasswordScreen());
-
+      case Routes.homeRoute:
+        return MaterialPageRoute(builder: (context) => const HomeScreen());
       default:
         return MaterialPageRoute(builder: (context) => const LoginScreen());
     }

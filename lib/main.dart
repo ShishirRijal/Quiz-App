@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:quiz_app/screens/homescreen/home_screen.dart';
 import 'package:quiz_app/screens/login_screen/login_screen.dart';
 import 'package:quiz_app/screens/profile_screen/profile_screen.dart';
+import 'package:quiz_app/screens/quiz_screen/quiz_screen.dart';
 import 'package:quiz_app/services/register_validation.dart';
 import 'package:quiz_app/services/services.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: quizTheme,
           onGenerateRoute: RouteGenerator.getRoute,
-          home: const ProfileScreen(),
+          home: const QuizScreen(),
         );
       }),
     );

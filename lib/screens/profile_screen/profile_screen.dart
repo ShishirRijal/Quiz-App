@@ -19,6 +19,8 @@ class ProfileScreen extends StatelessWidget {
             Column(
               children: [
                 Container(
+                    height: 250,
+                    width: size.width,
                     decoration: BoxDecoration(
                       color: ColorManager.primary.withOpacity(0.75),
                       borderRadius: const BorderRadius.only(
@@ -26,8 +28,6 @@ class ProfileScreen extends StatelessWidget {
                         bottomRight: Radius.circular(20.0),
                       ),
                     ),
-                    height: 200,
-                    width: size.width,
                     child: Image.asset('assets/images/logo.png',
                         fit: BoxFit.contain)),
                 Expanded(
@@ -84,7 +84,7 @@ class ProfileScreen extends StatelessWidget {
               ],
             ),
             Positioned(
-              top: 100,
+              top: 150,
               child: Container(
                 height: 200.0,
                 width: 200.0,

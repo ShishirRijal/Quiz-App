@@ -22,6 +22,7 @@ class ColorManager {
   static const Color lightGrey = Color(0XFF9E9E9E);
   static const Color white = Color(0XFFFFFFFF);
   static const Color error = Color(0XFFE61F34);
+  static const Color correct = Colors.green;
   static const Color black = Color(0XFF000000);
 }
 
