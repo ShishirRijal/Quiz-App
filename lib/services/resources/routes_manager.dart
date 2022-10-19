@@ -20,7 +20,7 @@ class RouteGenerator {
             builder: (context) => const ForgotPasswordScreen());
 
       default:
-        return MaterialPageRoute(builder: (context) => const HomeScreen());
+        return MaterialPageRoute(builder: (context) => const LoginScreen());
     }
   }
 }

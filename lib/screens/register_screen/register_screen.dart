@@ -10,14 +10,13 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: GestureDetector(
-            onTap: () {
-              // dismiss keyboard when touched outside the textfield
-              FocusManager.instance.primaryFocus?.unfocus();
-            },
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20.0),
@@ -98,7 +97,7 @@ class _InputAndRegister extends StatelessWidget {
           isObscure: true,
           errorText: registerAuth.password.error,
           onChange: (value) {
-            // registerAuth.setPassword(value);
+            registerAuth.setPassword(value);
           },
         ),
 
@@ -109,8 +108,13 @@ class _InputAndRegister extends StatelessWidget {
         ElevatedButton(
           onPressed: !registerAuth.isValid()
               ? null
-              : () {
-                  registerAuth.register(context);
+              : () async {
+                  final auth = Provider.of<AuthService>(context, listen: false);
+                  // implement register logic
+                  await auth.signUpWithEmailAndPassword(
+                      registerAuth.email.value,
+                      registerAuth.password.value,
+                      context);
                 },
           child: const Text("Sign Up"),
         ),

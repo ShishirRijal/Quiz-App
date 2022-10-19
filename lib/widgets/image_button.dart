@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../services/style_manger.dart';
+import '../services/services.dart';
 
 class ImageButton extends StatelessWidget {
   const ImageButton({

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-import '../services/asset_manager.dart';
+import '../services/services.dart';
 
 class Logo extends StatelessWidget {
   const Logo({

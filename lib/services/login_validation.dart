@@ -1,4 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:quiz_app/services/auth_services.dart';
+import 'package:quiz_app/services/helper_functions.dart';
 import 'package:quiz_app/services/models.dart';
 
 import '../screens/homescreen/home_screen.dart';
@@ -35,7 +39,8 @@ class LoginValidation with ChangeNotifier {
 
 // check the validation
   bool isValid() {
-    if (_email.error == null && _password.error == null) {
+    if ((_email.error == null && _password.error == null) &&
+        (_email.value != "" && _password.value != "")) {
       return true;
     } else {
       return false;
@@ -43,13 +48,20 @@ class LoginValidation with ChangeNotifier {
   }
 
 // login function
-  void login(BuildContext context) {
-    //I'll check validation myself
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-        (route) => false);
-  }
+  // login(BuildContext context) async {
+  //   try {
+  //     await Provider.of<AuthService>(context, listen: false)
+  //         .signInWithEmailAndPassword(email.value, password.value);
+  //   } on FirebaseAuthException catch (e) {
+  //     if (e.code == 'user-not-found') {
+  //       print('No user found for that email.');
+  //     } else if (e.code == 'wrong-password') {
+  //       print('Wrong password provided for that user.');
+  //     }
+  //   } catch (e) {
+  //     return showErrorDialog(context);
+  //   }
+  // }
 
 // for forget password
   void submit() {

@@ -117,7 +117,10 @@ class _InputAndLogin extends StatelessWidget {
           onPressed: !loginAuth.isValid()
               ? null
               : () {
-                  loginAuth.login(context);
+                  //implement sign in
+                  Provider.of<AuthService>(context, listen: false)
+                      .signInWithEmailAndPassword(loginAuth.email.value,
+                          loginAuth.password.value, context);
                 },
           child: const Text("Login"),
         ),
@@ -127,8 +130,13 @@ class _InputAndLogin extends StatelessWidget {
               onPressed: () {
                 Navigator.pushNamed(context, Routes.forgotPasswordRoute);
               },
-              child: Text("Forgot password?",
-                  style: getLightTextStyle(color: ColorManager.primary))),
+              child: Text(
+                "Forgot password?",
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText1!
+                    .copyWith(color: ColorManager.primary),
+              )),
         ),
 
         const SizedBox(height: 10.0),

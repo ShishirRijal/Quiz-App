@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/services/models.dart';
 
-import '../screens/homescreen/home_screen.dart';
-
 class RegisterValidation with ChangeNotifier {
   // login field items
   ValidationItem _email = ValidationItem("", null);
@@ -43,24 +41,16 @@ class RegisterValidation with ChangeNotifier {
     notifyListeners();
   }
 
-// check the validation
+// local validation
   bool isValid() {
-    if (_email.error == null &&
-        _password.error == null &&
-        _name.error == null) {
+    if ((_email.error == null &&
+            _password.error == null &&
+            _name.error == null) &&
+        (_email.value != "" && _password.value != "" && _name.value != "")) {
       return true;
     } else {
       return false;
     }
-  }
-
-// login function
-  void register(BuildContext context) {
-    //I'll check validation myself
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-        (route) => false);
   }
 
 // private functions

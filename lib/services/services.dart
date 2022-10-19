@@ -1,9 +1,9 @@
-export './asset_manager.dart';
-export './auth.dart';
+export './resources/asset_manager.dart';
+export 'auth_services.dart';
 export './login_validation.dart';
 export './models.dart';
-export './routes_manager.dart';
+export './resources/routes_manager.dart';
 export './services.dart';
-export './style_manger.dart';
-export './theme_manager.dart';
+export './resources/style_manger.dart';
+export './resources/theme_manager.dart';
 export './responsive.dart';

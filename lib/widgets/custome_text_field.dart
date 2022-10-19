@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../services/style_manger.dart';
+import '../services/services.dart';
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
@@ -41,7 +41,7 @@ class CustomTextField extends StatelessWidget {
           borderSide: BorderSide(color: ColorManager.primary, width: 1.5),
         ),
         errorBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: ColorManager.error, width: 1.0),
+          borderSide: BorderSide(color: Colors.black38, width: 1.0),
         ),
         focusedErrorBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: ColorManager.error, width: 1.5),

@@ -19,7 +19,7 @@ class HelperRichText extends StatelessWidget {
         children: [
           TextSpan(
             text: message,
-            style: Theme.of(context).textTheme.bodyText2,
+            style: Theme.of(context).textTheme.bodyText1,
           ),
           TextSpan(
             text: actionText,

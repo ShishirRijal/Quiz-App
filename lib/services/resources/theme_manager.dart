@@ -3,10 +3,17 @@ import 'package:quiz_app/services/services.dart';
 
 ThemeData quizTheme = ThemeData(
   fontFamily: 'Montserrat',
+  appBarTheme: AppBarTheme(
+    backgroundColor: ColorManager.primary,
+    elevation: 5.0,
+    centerTitle: true,
+    titleTextStyle: getMediumTextStyle(color: ColorManager.white, size: 20.0),
+  ),
   scaffoldBackgroundColor: ColorManager.white,
   // text theme
   textTheme: TextTheme(
     headline1: getBoldTextStyle(size: 30.0),
+    headline2: getMediumTextStyle(size: 24.0), // for titles and appbar
     //body text
     bodyText1: getRegularTextStyle(),
     bodyText2: getRegularTextStyle(color: ColorManager.grey),

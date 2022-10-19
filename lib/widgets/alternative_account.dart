@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../services/asset_manager.dart';
+import 'package:provider/provider.dart';
+import 'package:quiz_app/services/services.dart';
 import 'image_button.dart';
 
 class AlternativeAccount extends StatelessWidget {
@@ -18,10 +18,16 @@ class AlternativeAccount extends StatelessWidget {
       // mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         // sign in with google
-        ImageButton(imagePath: AssetManager.googleIcon, onPressed: () {}),
+        ImageButton(
+          imagePath: AssetManager.googleIcon,
+          onPressed:
+              Provider.of<AuthService>(context, listen: false).signInWithGoogle,
+        ),
+
         // sign in with facebook
 
         ImageButton(imagePath: AssetManager.facebookLogo, onPressed: () {}),
+
         // sign in with apple
 
         ImageButton(imagePath: AssetManager.appleLogo, onPressed: () {}),
