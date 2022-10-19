@@ -6,12 +6,10 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final isMobile = MediaQuery.of(context).size.width < 480;
+    final double scaleFactor = isMobile ? 1.0 : 1.5;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Profile"),
-      ),
-      body: SafeArea(
+      body: SingleChildScrollView(
         child: Stack(
           alignment: Alignment.center,
           clipBehavior: Clip.none,
@@ -19,75 +17,85 @@ class ProfileScreen extends StatelessWidget {
             Column(
               children: [
                 Container(
-                    height: 250,
-                    width: size.width,
-                    decoration: BoxDecoration(
-                      color: ColorManager.primary.withOpacity(0.75),
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(20.0),
-                        bottomRight: Radius.circular(20.0),
+                  height: isMobile ? 250 : 350,
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  decoration: const BoxDecoration(
+                    color: ColorManager.primary,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(20.0),
+                      bottomRight: Radius.circular(20.0),
+                    ),
+                  ),
+                  child: Center(
+                    child: FittedBox(
+                      child: Text(
+                        "SHISHIR",
+                        style: getBoldTextStyle(
+                          color: Colors.white38,
+                          size: 200.0,
+                        ),
                       ),
                     ),
-                    child: Image.asset('assets/images/logo.png',
-                        fit: BoxFit.contain)),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 120, 20, 0),
-                    child: Column(
-                      // crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        //name
-                        Text(
-                          "Shishir Rijal",
-                          style: getBoldTextStyle(
-                            color: ColorManager.primary,
-                          ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20, isMobile ? 120 : 250, 20, 0),
+                  child: Column(
+                    children: [
+                      //name
+                      Text(
+                        "Shishir Rijal",
+                        textScaleFactor: scaleFactor,
+                        style: getBoldTextStyle(
+                          color: ColorManager.primary,
                         ),
-                        //tag
-                        Text(
-                          "Bonus Booster, Level 24",
-                          style: getRegularTextStyle(
-                            color: ColorManager.grey,
-                          ),
+                      ),
+                      //tag
+                      Text(
+                        "Bonus Booster, Level 24",
+                        textScaleFactor: scaleFactor,
+                        style: getRegularTextStyle(
+                          color: ColorManager.grey,
                         ),
-                        const SizedBox(height: 20.0),
+                      ),
+                      const SizedBox(height: 20.0),
 
-                        Container(
-                          padding: const EdgeInsets.all(10.0),
-                          width: size.width,
-                          height: 120.0,
-                          decoration: BoxDecoration(
-                            color: ColorManager.primary.withOpacity(1),
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: const [
-                              // Stats(),
-                              // VerticalDivider(),
-                              // Stats(),
-                              // VerticalDivider(),
-                              // Stats(),
-                              Expanded(child: Stats("All Time Best", 173)),
-                              VerticalDivider(),
-                              Expanded(child: Stats("Questions", 78)),
-                              VerticalDivider(),
-                              Expanded(child: Stats("Total Score", 768)),
-                            ],
-                          ),
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 20.0),
+                        padding: const EdgeInsets.all(10.0),
+                        width: double.infinity,
+                        height: isMobile ? 120 : 180,
+                        decoration: BoxDecoration(
+                          color: ColorManager.primary.withOpacity(1),
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
-                      ],
-                    ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Expanded(
+                                child:
+                                    Stats("All Time Best", 173, scaleFactor)),
+                            const VerticalDivider(),
+                            Expanded(
+                                child: Stats("Questions", 78, scaleFactor)),
+                            const VerticalDivider(),
+                            Expanded(
+                                child: Stats("Total Score", 768, scaleFactor)),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
             Positioned(
-              top: 150,
+              top: isMobile ? 150 : 200,
               child: Container(
-                height: 200.0,
-                width: 200.0,
+                height: isMobile ? 200.0 : 350,
+                width: isMobile ? 200.0 : 350,
                 decoration: BoxDecoration(
                   color: ColorManager.primary,
                   borderRadius: BorderRadius.circular(20.0),
@@ -123,27 +131,29 @@ class VerticalDivider extends StatelessWidget {
 class Stats extends StatelessWidget {
   const Stats(
     this.title,
-    this.score, {
+    this.score,
+    this.scaleFactor, {
     Key? key,
   }) : super(key: key);
   final String title;
   final int score;
+  final double scaleFactor;
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Icon(
+        Icon(
           Icons.star_border,
           color: ColorManager.white,
-          size: 30.0,
+          size: 30.0 * scaleFactor,
         ),
         FittedBox(
           child: Text(
             title,
+            textScaleFactor: scaleFactor,
             maxLines: 1,
-            // overflow: TextOverflow.ellipsis,
             style: getRegularTextStyle(color: Colors.white70),
           ),
         ),
@@ -151,48 +161,13 @@ class Stats extends StatelessWidget {
         FittedBox(
           child: Text(
             "$score",
+            textScaleFactor: scaleFactor,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: getBoldTextStyle(color: ColorManager.white),
           ),
         ),
       ],
-    );
-  }
-}
-
-class StatsCard extends StatelessWidget {
-  const StatsCard(
-    this.title,
-    this.score, {
-    Key? key,
-  }) : super(key: key);
-  final String title;
-  final int score;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10.0),
-      height: 100.0,
-      width: 150.0,
-      decoration: BoxDecoration(
-        color: ColorManager.primary.withOpacity(0.75),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          FittedBox(
-              child: Text("$score",
-                  maxLines: 1, style: getBoldTextStyle(color: Colors.white))),
-          FittedBox(
-              child: Text(title,
-                  maxLines: 1,
-                  style: getRegularTextStyle(color: Colors.white70))),
-        ],
-      ),
     );
   }
 }
