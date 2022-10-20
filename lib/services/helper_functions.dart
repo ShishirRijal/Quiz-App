@@ -7,7 +7,7 @@ void showErrorDialog(BuildContext context, {String? message}) {
       builder: (context) => AlertDialog(
             title: Center(
               child: Text('Error!',
-                  style: getBoldTextStyle(color: ColorManager.error)),
+                  style: getMediumTextStyle(color: ColorManager.error)),
             ),
             content: Text(
               message ??

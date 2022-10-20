@@ -1,6 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/services/resources/style_manger.dart';
-import 'package:percent_indicator/percent_indicator.dart';
+import 'package:quiz_app/widgets/animated_timer.dart';
+
+class Answer {
+  final String answerText;
+  final bool isCorrect;
+  const Answer(this.answerText, [this.isCorrect = false]);
+}
+
+class Question {
+  final String questionText;
+  final List<Answer> answers;
+  const Question({required this.questionText, required this.answers});
+}
+
+const List<Question> questions = [
+  Question(
+    questionText: "Which is the longest river of the world?",
+    answers: [
+      Answer('Nile', true),
+      Answer('Ganga'),
+      Answer('Blue Tue'),
+      Answer('Dainy'),
+    ],
+  ),
+  Question(
+    questionText: "Which one is the birth place of Gautam Buddha?",
+    answers: [
+      Answer('Bahra - India'),
+      Answer('Lumbini - Nepal', true),
+      Answer('Wuhan - China '),
+      Answer('Bangkok - Thailand'),
+    ],
+  ),
+  Question(
+    questionText: "Who is the CEO of GOOGLE?",
+    answers: [
+      Answer('Sundar Paneru'),
+      Answer('Pramesh Sundar'),
+      Answer('Sundar Pichai', true),
+      Answer('Pichmesh Sundar'),
+    ],
+  ),
+  Question(
+    questionText: "Which the the most preveliged engineering campus of Nepal?",
+    answers: [
+      Answer('Pulchowk Campus', true),
+      Answer('Paschimanchal Campus'),
+      Answer('Purwanchal Campus'),
+      Answer('Thapathali Campus'),
+    ],
+  ),
+];
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});
@@ -17,92 +68,71 @@ class _QuizScreenState extends State<QuizScreen> {
     final double scaleFactor = isMobile ? 1.0 : 1.5;
     final padding = isMobile ? 20.0 : 40.0;
     final smallDevicePadding = size.height < 720 ? 120.0 : 180.0;
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Stack(
-          alignment: Alignment.center,
-          clipBehavior: Clip.none,
-          children: [
-            Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20.0, vertical: 10.0),
-                  alignment: Alignment.topCenter,
-                  height: isMobile ? 250 : 350,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: ColorManager.primary,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(20.0),
-                      bottomRight: Radius.circular(20.0),
-                    ),
-                  ),
-                  child: FittedBox(
-                    child: Text(
-                      "QUIZ",
-                      style: getBoldTextStyle(
-                        color: Colors.white38,
-                        size: 200.0,
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                      padding, smallDevicePadding, padding, padding),
-                  child: Column(
-                    // crossAxisAlignment: CrossAxisAlignment.center,
+    int questionIndex = 0;
+    return questionIndex >= questions.length
+        ? Scaffold(
+            body: Center(child: Text("Score", style: getBoldTextStyle())))
+        : Scaffold(
+            body: SingleChildScrollView(
+              child: Stack(
+                alignment: Alignment.center,
+                clipBehavior: Clip.none,
+                children: [
+                  Column(
                     children: [
-                      const AnswerCard(isTapped: true, ans: 'true'),
-                      SizedBox(height: isMobile ? 15.0 : 20.0),
-                      const AnswerCard(isTapped: false, ans: 'false'),
-                      SizedBox(height: isMobile ? 15.0 : 20.0),
-                      const AnswerCard(isTapped: true, ans: 'false'),
-                      SizedBox(height: isMobile ? 15.0 : 20.0),
-                      const AnswerCard(isTapped: false, ans: 'false'),
-                      //
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 10.0),
+                        alignment: Alignment.topCenter,
+                        height: isMobile ? 250 : 350,
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                          color: ColorManager.primary,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(20.0),
+                            bottomRight: Radius.circular(20.0),
+                          ),
+                        ),
+                        child: FittedBox(
+                          child: Text(
+                            "QUIZ",
+                            style: getBoldTextStyle(
+                              color: Colors.white38,
+                              size: 200.0,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(
+                            padding, smallDevicePadding, padding, padding),
+                        child: Column(
+                          // crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const AnswerCard(isTapped: true, ans: 'true'),
+                            SizedBox(height: isMobile ? 15.0 : 20.0),
+                            const AnswerCard(isTapped: false, ans: 'false'),
+                            SizedBox(height: isMobile ? 15.0 : 20.0),
+                            const AnswerCard(isTapped: true, ans: 'false'),
+                            SizedBox(height: isMobile ? 15.0 : 20.0),
+                            const AnswerCard(isTapped: false, ans: 'false'),
+                            //
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                ),
-              ],
-            ),
-            Positioned(
-              top: 150,
-              child: QuestionCard(size: size),
-            ),
-            Positioned(
-              top: 100.0,
-              child: Container(
-                padding: const EdgeInsets.all(5),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
-                child: CircularPercentIndicator(
-                  backgroundColor: Colors.white,
-                  radius: 50.0,
-                  // animationDuration: 500,
-                  lineWidth: 7.0,
-                  // animation: true,
-                  percent: 0.75,
-                  progressColor: ColorManager.primary,
-                  animateFromLastPercent: true,
-                  circularStrokeCap: CircularStrokeCap.round,
-                  center: Text(
-                    '18',
-                    style: getBoldTextStyle(
-                      color: ColorManager.primary,
-                    ),
-                    textScaleFactor: scaleFactor,
+                  Positioned(
+                    top: 150,
+                    child: QuestionCard(size: size),
                   ),
-                ),
+                  Positioned(
+                      top: 100.0,
+                      child: AnimatedTimer(scaleFactor: scaleFactor)),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-    );
+          );
   }
 }
 
@@ -124,58 +154,66 @@ class AnswerCard extends StatelessWidget {
     final bool isMobile = MediaQuery.of(context).size.width < 480;
     final double scaleFactor = isMobile ? 1.0 : 1.5;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-      width: double.infinity,
-      height: isMobile ? 60.0 : 75.0,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(
+    return InkWell(
+      splashColor: ColorManager.primary,
+      onTap: () {},
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        width: double.infinity,
+        height: isMobile ? 60.0 : 75.0,
+        decoration: BoxDecoration(
           color: !isTapped
-              ? const Color.fromARGB(255, 205, 204, 204)
-              : (checkAnswer() ? ColorManager.correct : ColorManager.error),
-          width: 2.0 * scaleFactor,
-        ),
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            child: Text("Nile River",
-                textScaleFactor: scaleFactor,
-                style: getMediumTextStyle(color: ColorManager.darkGrey)),
+              ? Colors.white
+              : (checkAnswer()
+                  ? ColorManager.correct.withOpacity(0.3)
+                  : ColorManager.error.withOpacity(0.3)),
+          border: Border.all(
+            color: !isTapped
+                ? const Color.fromARGB(255, 205, 204, 204)
+                : (checkAnswer() ? ColorManager.correct : ColorManager.error),
+            width: 2.0 * scaleFactor,
           ),
-          Flexible(
-            child: Container(
-              height: isMobile ? 25 : 35,
-              width: isMobile ? 25 : 35,
-              decoration: BoxDecoration(
-                color: !isTapped
-                    ? Colors.transparent
-                    : (checkAnswer()
-                        ? ColorManager.correct
-                        : ColorManager.error),
-                borderRadius: BorderRadius.circular(15.0),
-                border: isTapped
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              child: Text("Nile River",
+                  textScaleFactor: scaleFactor,
+                  style: getMediumTextStyle(color: ColorManager.darkGrey)),
+            ),
+            Flexible(
+              child: Container(
+                height: isMobile ? 25 : 35,
+                width: isMobile ? 25 : 35,
+                decoration: BoxDecoration(
+                  color: !isTapped
+                      ? Colors.transparent
+                      : (checkAnswer()
+                          ? ColorManager.correct
+                          : ColorManager.error),
+                  borderRadius: BorderRadius.circular(15.0),
+                  border: isTapped
+                      ? null
+                      : Border.all(
+                          color: const Color.fromARGB(255, 205, 204, 204),
+                          width: 2.0 * scaleFactor,
+                        ),
+                ),
+                child: !isTapped
                     ? null
-                    : Border.all(
-                        color: const Color.fromARGB(255, 205, 204, 204),
-                        width: 2.0 * scaleFactor,
+                    : FittedBox(
+                        child: Icon(
+                          checkAnswer() ? Icons.check : Icons.close,
+                          color: Colors.white,
+                        ),
                       ),
               ),
-              child: !isTapped
-                  ? null
-                  : FittedBox(
-                      child: Icon(
-                        checkAnswer() ? Icons.check : Icons.close,
-                        color: Colors.white,
-                      ),
-                    ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -9,8 +9,8 @@ ThemeData quizTheme = ThemeData(
     centerTitle: true,
     titleTextStyle: getMediumTextStyle(color: ColorManager.white, size: 20.0),
   ),
-  // scaffoldBackgroundColor: ColorManager.white,
-  scaffoldBackgroundColor: const Color.fromARGB(242, 253, 253, 253),
+  scaffoldBackgroundColor: ColorManager.white,
+  // scaffoldBackgroundColor: const Color.fromARGB(242, 253, 253, 253),
 
   // text theme
   textTheme: TextTheme(

@@ -1,37 +1,35 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:quiz_app/services/helper_functions.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../screens/homescreen/home_screen.dart';
-import '../screens/login_screen/login_screen.dart';
-
-enum Status { idle, busy }
+import 'helper_functions.dart';
 
 class AuthService with ChangeNotifier {
+//
   final _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  User? _user = FirebaseAuth.instance.currentUser;
-  User? get user => _user;
-  Status status = Status.idle;
+  User? get user => FirebaseAuth.instance.currentUser;
 
-  // determine the screen to be loaded ....
-  Widget handleAuthResponse() {
-    return StreamBuilder(
-      stream: _auth.authStateChanges(),
-      builder: (context, snapshot) {
-        if (FirebaseAuth.instance.currentUser != null) {
-          return const HomeScreen(); // for sign up
-        }
-        if (snapshot.hasData) {
-          return const HomeScreen();
-        } else {
-          return const LoginScreen();
-        }
-      },
-    );
+  // Automatic login and logout with shared preferences
+  Future<void> setAuthStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("IS_USER_LOGGED_IN", true);
+  }
+
+  Future<void> clearAuthStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    // if (prefs.containsKey('IS_USER_LOGGED_IN')) {
+    await prefs.remove("IS_USER_LOGGED_IN");
+    // }
+  }
+
+  Future<bool> getAuthStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool? status = prefs.getBool('IS_USER_LOGGED_IN');
+    return status != null;
   }
 
   // sign in with email and password
@@ -39,9 +37,9 @@ class AuthService with ChangeNotifier {
   Future signInWithEmailAndPassword(
       String email, String password, BuildContext context) async {
     try {
-      status = Status.busy;
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      status = Status.idle;
+
+      await setAuthStatus();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         return showErrorDialog(context,
@@ -60,11 +58,9 @@ class AuthService with ChangeNotifier {
   Future signUpWithEmailAndPassword(
       String email, String password, BuildContext context) async {
     try {
-      status = Status.busy;
-      await _auth
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then((userCredential) => saveUserDetails());
-      status = Status.idle;
+      await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      await setAuthStatus();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         return showErrorDialog(context,
@@ -76,7 +72,6 @@ class AuthService with ChangeNotifier {
     } catch (e) {
       return showErrorDialog(context);
     }
-
     notifyListeners();
   }
 
@@ -84,39 +79,53 @@ class AuthService with ChangeNotifier {
   Future<void> signInWithGoogle() async {
     // Trigger the authentication flow
 
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    try {
+      final GoogleSignInAccount? googleUser =
+          await GoogleSignIn().signIn().catchError(
+        (e) {
+          print(" => $e");
+        },
+      );
+      if (googleUser == null) return;
 
-    // Obtain the auth details from the request
+      // Obtain the auth details from the request
 
-    GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+      GoogleSignInAuthentication? googleAuth = await googleUser.authentication;
+      if (googleAuth.accessToken == null || googleAuth.idToken == null) return;
 
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-    await FirebaseAuth.instance.signInWithCredential(credential);
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
-    // Once signed in, return the UserCredential
-    // return
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      await setAuthStatus();
+    } on PlatformException catch (e) {
+      if (e.code == "sign_in_canceled") {
+        print("Sign in cancelled");
+      } else {
+        print("Error occured");
+      }
+    } catch (e) {
+      print(e);
+    }
 
     notifyListeners();
   }
 
   // signout
   signOut() async {
+    //  Check the existence of google sign in
+
+    var methods =
+        await FirebaseAuth.instance.fetchSignInMethodsForEmail(user!.email!);
+    if (methods.contains('google.com')) {
+      await GoogleSignIn().signOut();
+    }
     await FirebaseAuth.instance.signOut();
+    await clearAuthStatus();
     notifyListeners();
-  }
-
-  Future<void> saveUserDetails() async {
-    //save user details
-    User? user = FirebaseAuth.instance.currentUser;
-
-    await _db.collection("users").doc(user?.uid).set({
-      'name': 'Shishir Rijal1',
-      'email': 'ccrrizatl7438@gmail.com',
-    }).catchError((error) => print("Failed"));
   }
 
   // ends

@@ -116,9 +116,9 @@ class _InputAndLogin extends StatelessWidget {
         ElevatedButton(
           onPressed: !loginAuth.isValid()
               ? null
-              : () {
+              : () async {
                   //implement sign in
-                  Provider.of<AuthService>(context, listen: false)
+                  await Provider.of<AuthService>(context, listen: false)
                       .signInWithEmailAndPassword(loginAuth.email.value,
                           loginAuth.password.value, context);
                 },
