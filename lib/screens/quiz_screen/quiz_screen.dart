@@ -26,6 +26,8 @@ class _QuizScreenState extends State<QuizScreen> {
             Column(
               children: [
                 Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 10.0),
                   alignment: Alignment.topCenter,
                   height: isMobile ? 250 : 350,
                   width: double.infinity,
