@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:quiz_app/services/quiz.dart';
 import 'package:quiz_app/services/resources/style_manger.dart';
+
+import '../../services/auth_services.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthService>(context);
+    final user = auth.user;
     final isMobile = MediaQuery.of(context).size.width < 480;
     final double scaleFactor = isMobile ? 1.0 : 1.5;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Stack(
@@ -16,28 +23,46 @@ class ProfileScreen extends StatelessWidget {
           children: [
             Column(
               children: [
-                Container(
-                  height: isMobile ? 250 : 350,
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  decoration: const BoxDecoration(
-                    color: ColorManager.primary,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(20.0),
-                      bottomRight: Radius.circular(20.0),
-                    ),
-                  ),
-                  child: Center(
-                    child: FittedBox(
-                      child: Text(
-                        "SHISHIR",
-                        style: getBoldTextStyle(
-                          color: Colors.white38,
-                          size: 200.0,
+                Stack(
+                  children: [
+                    Container(
+                      height: isMobile ? 250 : 350,
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      decoration: const BoxDecoration(
+                        color: ColorManager.primary,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20.0),
+                          bottomRight: Radius.circular(20.0),
+                        ),
+                      ),
+                      child: Center(
+                        child: FittedBox(
+                          child: Text(
+                            user?.name?.toUpperCase() ?? "QUIZZLER",
+                            style: getBoldTextStyle(
+                              color: Colors.white38,
+                              size: 200.0,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                    //exit button
+                    Positioned(
+                      top: 40.0,
+                      right: 20.0,
+                      child: IconButton(
+                        tooltip: "Exit",
+                        icon: const Icon(Icons.exit_to_app),
+                        color: Colors.white,
+                        iconSize: 30.0,
+                        onPressed: () async {
+                          await auth.signOut();
+                        },
+                      ),
+                    ),
+                  ],
                 ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(20, isMobile ? 120 : 250, 20, 0),
@@ -45,7 +70,7 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       //name
                       Text(
-                        "Shishir Rijal",
+                        user?.name ?? "QUIZZLER",
                         textScaleFactor: scaleFactor,
                         style: getBoldTextStyle(
                           color: ColorManager.primary,
@@ -53,7 +78,8 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       //tag
                       Text(
-                        "Bonus Booster, Level 24",
+                        // "Bonus Booster, Level 24",
+                        user?.email ?? 'errorLoading',
                         textScaleFactor: scaleFactor,
                         style: getRegularTextStyle(
                           color: ColorManager.grey,

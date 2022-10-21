@@ -1,17 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:quiz_app/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'helper_functions.dart';
 
 class AuthService with ChangeNotifier {
 //
   final _auth = FirebaseAuth.instance;
 
-  User? get user => FirebaseAuth.instance.currentUser;
+  // User? get user => FirebaseAuth.instance.currentUser;
+  UserModel? _user;
+  UserModel? get user {
+    if (_user == null) {
+      getUserData();
+    }
+    return _user;
+  }
 
   // Automatic login and logout with shared preferences
   Future<void> setAuthStatus() async {
@@ -55,11 +63,13 @@ class AuthService with ChangeNotifier {
 
   // sign up with email
 
-  Future signUpWithEmailAndPassword(
-      String email, String password, BuildContext context) async {
+  Future signUpWithEmailAndPassword(String email, String password,
+      String fullname, BuildContext context) async {
     try {
-      await _auth.createUserWithEmailAndPassword(
+      final firebaseUser = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
+      registerUserData(firebaseUser.user!,
+          name: fullname, photoUrl: "ahilexainahai");
       await setAuthStatus();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -99,7 +109,9 @@ class AuthService with ChangeNotifier {
         idToken: googleAuth.idToken,
       );
 
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      final firebaseUser =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      registerUserData(firebaseUser.user!);
       await setAuthStatus();
     } on PlatformException catch (e) {
       if (e.code == "sign_in_canceled") {
@@ -126,6 +138,48 @@ class AuthService with ChangeNotifier {
     await FirebaseAuth.instance.signOut();
     await clearAuthStatus();
     notifyListeners();
+  }
+
+//
+  void registerUserData(User user, {String? name, String? photoUrl}) {
+    try {
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('users');
+      users.doc(user.uid).set({
+        'name': name ?? user.displayName,
+        'email': user.email,
+        'photoUrl': photoUrl ?? user.photoURL,
+        'uid': user.uid,
+        // 'lastSeen': DateTime.now(),
+      });
+    } catch (e) {
+      print("Error adding data $e");
+    }
+  }
+
+  getUserData() {
+    UserModel? firebaseUser;
+
+    try {
+      final currentUser = FirebaseAuth.instance.currentUser;
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('users');
+      users.doc(currentUser!.uid).get().then((value) {
+        final response = value.data() as Map<String, dynamic>;
+
+        firebaseUser = UserModel(
+          name: response['name'],
+          email: response['email'],
+          imgUrl: response['photoUrl'],
+          uid: response['uid'],
+        );
+        _user = firebaseUser;
+        // print(response);
+        // print(_user?.email);
+      });
+    } catch (e) {
+      print("Error retriving data $e");
+    }
   }
 
   // ends

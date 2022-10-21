@@ -111,10 +111,13 @@ class _InputAndRegister extends StatelessWidget {
               : () async {
                   //implement sign up
                   await Provider.of<AuthService>(context, listen: false)
-                      .signUpWithEmailAndPassword(registerAuth.email.value,
-                          registerAuth.password.value, context)
+                      .signUpWithEmailAndPassword(
+                          registerAuth.email.value,
+                          registerAuth.password.value,
+                          registerAuth.name.value,
+                          context)
                       .whenComplete(() => Navigator.pushNamedAndRemoveUntil(
-                          context, Routes.homeRoute, (route) => false));
+                          context, Routes.profileRoute, (route) => false));
                 },
           child: const Text("Sign Up"),
         ),

@@ -1,66 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:quiz_app/screens/result_screen.dart/result_screen.dart';
 import 'package:quiz_app/services/resources/style_manger.dart';
 import 'package:quiz_app/widgets/animated_timer.dart';
 
-class Answer {
-  final String answerText;
-  final bool isCorrect;
-  const Answer(this.answerText, [this.isCorrect = false]);
-}
+import '../../services/quiz.dart';
+import '../../services/resources/routes_manager.dart';
+import 'components/answer_card.dart';
+import 'components/question_card.dart';
 
-class Question {
-  final String questionText;
-  final List<Answer> answers;
-  const Question({required this.questionText, required this.answers});
-}
-
-const List<Question> questions = [
-  Question(
-    questionText: "Which is the longest river of the world?",
-    answers: [
-      Answer('Nile', true),
-      Answer('Ganga'),
-      Answer('Blue Tue'),
-      Answer('Dainy'),
-    ],
-  ),
-  Question(
-    questionText: "Which one is the birth place of Gautam Buddha?",
-    answers: [
-      Answer('Bahra - India'),
-      Answer('Lumbini - Nepal', true),
-      Answer('Wuhan - China '),
-      Answer('Bangkok - Thailand'),
-    ],
-  ),
-  Question(
-    questionText: "Who is the CEO of GOOGLE?",
-    answers: [
-      Answer('Sundar Paneru'),
-      Answer('Pramesh Sundar'),
-      Answer('Sundar Pichai', true),
-      Answer('Pichmesh Sundar'),
-    ],
-  ),
-  Question(
-    questionText: "Which the the most preveliged engineering campus of Nepal?",
-    answers: [
-      Answer('Pulchowk Campus', true),
-      Answer('Paschimanchal Campus'),
-      Answer('Purwanchal Campus'),
-      Answer('Thapathali Campus'),
-    ],
-  ),
-];
-
-class QuizScreen extends StatefulWidget {
+class QuizScreen extends StatelessWidget {
   const QuizScreen({super.key});
-
-  @override
-  State<QuizScreen> createState() => _QuizScreenState();
-}
-
-class _QuizScreenState extends State<QuizScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -68,10 +18,15 @@ class _QuizScreenState extends State<QuizScreen> {
     final double scaleFactor = isMobile ? 1.0 : 1.5;
     final padding = isMobile ? 20.0 : 40.0;
     final smallDevicePadding = size.height < 720 ? 120.0 : 180.0;
-    int questionIndex = 0;
-    return questionIndex >= questions.length
-        ? Scaffold(
-            body: Center(child: Text("Score", style: getBoldTextStyle())))
+    final quiz = Provider.of<Quiz>(context);
+
+    // Once the quiz time is complete, go to the result screen
+    Future.delayed(Duration(seconds: quiz.quizDuration), () {
+      Navigator.pushReplacementNamed(context, Routes.resultRoute);
+    });
+
+    return quiz.isCompleted
+        ? const ResultScreen()
         : Scaffold(
             body: SingleChildScrollView(
               child: Stack(
@@ -109,13 +64,15 @@ class _QuizScreenState extends State<QuizScreen> {
                         child: Column(
                           // crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const AnswerCard(isTapped: true, ans: 'true'),
+                            AnswerCard(0, deviceWidth: size.width),
                             SizedBox(height: isMobile ? 15.0 : 20.0),
-                            const AnswerCard(isTapped: false, ans: 'false'),
+                            AnswerCard(1, deviceWidth: size.width),
                             SizedBox(height: isMobile ? 15.0 : 20.0),
-                            const AnswerCard(isTapped: true, ans: 'false'),
+                            AnswerCard(2, deviceWidth: size.width),
                             SizedBox(height: isMobile ? 15.0 : 20.0),
-                            const AnswerCard(isTapped: false, ans: 'false'),
+                            AnswerCard(3, deviceWidth: size.width),
+                            SizedBox(height: isMobile ? 15.0 : 20.0),
+
                             //
                           ],
                         ),
@@ -128,212 +85,13 @@ class _QuizScreenState extends State<QuizScreen> {
                   ),
                   Positioned(
                       top: 100.0,
-                      child: AnimatedTimer(scaleFactor: scaleFactor)),
+                      child: AnimatedTimer(
+                        scaleFactor: scaleFactor,
+                        time: quiz.quizDuration,
+                      )),
                 ],
               ),
             ),
           );
-  }
-}
-
-class AnswerCard extends StatelessWidget {
-  const AnswerCard({
-    Key? key,
-    required this.isTapped,
-    required this.ans,
-  }) : super(key: key);
-  final bool isTapped;
-  final String ans;
-
-  bool checkAnswer() {
-    return ans == 'true';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final bool isMobile = MediaQuery.of(context).size.width < 480;
-    final double scaleFactor = isMobile ? 1.0 : 1.5;
-
-    return InkWell(
-      splashColor: ColorManager.primary,
-      onTap: () {},
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-        width: double.infinity,
-        height: isMobile ? 60.0 : 75.0,
-        decoration: BoxDecoration(
-          color: !isTapped
-              ? Colors.white
-              : (checkAnswer()
-                  ? ColorManager.correct.withOpacity(0.3)
-                  : ColorManager.error.withOpacity(0.3)),
-          border: Border.all(
-            color: !isTapped
-                ? const Color.fromARGB(255, 205, 204, 204)
-                : (checkAnswer() ? ColorManager.correct : ColorManager.error),
-            width: 2.0 * scaleFactor,
-          ),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Flexible(
-              child: Text("Nile River",
-                  textScaleFactor: scaleFactor,
-                  style: getMediumTextStyle(color: ColorManager.darkGrey)),
-            ),
-            Flexible(
-              child: Container(
-                height: isMobile ? 25 : 35,
-                width: isMobile ? 25 : 35,
-                decoration: BoxDecoration(
-                  color: !isTapped
-                      ? Colors.transparent
-                      : (checkAnswer()
-                          ? ColorManager.correct
-                          : ColorManager.error),
-                  borderRadius: BorderRadius.circular(15.0),
-                  border: isTapped
-                      ? null
-                      : Border.all(
-                          color: const Color.fromARGB(255, 205, 204, 204),
-                          width: 2.0 * scaleFactor,
-                        ),
-                ),
-                child: !isTapped
-                    ? null
-                    : FittedBox(
-                        child: Icon(
-                          checkAnswer() ? Icons.check : Icons.close,
-                          color: Colors.white,
-                        ),
-                      ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class QuestionCard extends StatelessWidget {
-  const QuestionCard({
-    Key? key,
-    required this.size,
-  }) : super(key: key);
-
-  final Size size;
-
-  @override
-  Widget build(BuildContext context) {
-    final bool isMobile = size.width < 480;
-    final double scaleFactor = isMobile ? 1.0 : 1.5;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-      height: isMobile ? 200 : 300,
-      width: size.width * 0.9,
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 5,
-            blurRadius: 7,
-            offset: const Offset(0, 3), // changes position of shadow
-          ),
-        ],
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const SizedBox(height: 20.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              LabelledChip(isWrong: false, score: 06, scaleFactor: scaleFactor),
-              LabelledChip(isWrong: true, score: 08, scaleFactor: scaleFactor),
-            ],
-          ),
-          const SizedBox(height: 5.0),
-          Flexible(
-            child: RichText(
-                textAlign: TextAlign.center,
-                textScaleFactor: scaleFactor,
-                text: TextSpan(children: [
-                  TextSpan(
-                      text: "Question ",
-                      style: getMediumTextStyle(color: ColorManager.primary)),
-                  TextSpan(
-                      text: "13",
-                      style: getBoldTextStyle(color: ColorManager.primary)),
-                  TextSpan(
-                      text: "/20",
-                      style: getMediumTextStyle(color: ColorManager.primary)),
-                ])),
-          ),
-          const SizedBox(height: 20.0),
-          Align(
-            child: Text("Which is the longest river in the world?",
-                textAlign: TextAlign.center,
-                textScaleFactor: scaleFactor,
-                style: getMediumTextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: ColorManager.darkGrey,
-                )),
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class LabelledChip extends StatelessWidget {
-  const LabelledChip({
-    Key? key,
-    required this.isWrong,
-    required this.score,
-    required this.scaleFactor,
-  }) : super(key: key);
-  final bool isWrong;
-  final int score;
-  final double scaleFactor;
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        if (!isWrong)
-          FittedBox(
-            child: Text(
-              score < 10 ? '0$score' : '$score',
-              style: getMediumTextStyle(color: Colors.green),
-              textScaleFactor: scaleFactor,
-            ),
-          ),
-        FittedBox(
-          child: Container(
-            height: 15.0 * scaleFactor,
-            width: 40.0 * scaleFactor,
-            margin: const EdgeInsets.symmetric(horizontal: 10.0),
-            decoration: BoxDecoration(
-              color: isWrong ? Colors.red : Colors.green,
-              borderRadius: BorderRadius.circular(20.0),
-            ),
-          ),
-        ),
-        if (isWrong)
-          Text(
-            score < 10 ? '0$score' : '$score',
-            style: getMediumTextStyle(
-              color: Colors.red,
-            ),
-            textScaleFactor: scaleFactor,
-          ),
-      ],
-    );
   }
 }
