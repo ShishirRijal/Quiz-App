@@ -161,14 +161,14 @@ class AuthService with ChangeNotifier {
     }
   }
 
-  void getUserData() {
+  Future<UserModel?> getUserData() async {
     UserModel? firebaseUser;
 
     try {
       final currentUser = FirebaseAuth.instance.currentUser;
       CollectionReference users =
           FirebaseFirestore.instance.collection('users');
-      users.doc(currentUser!.uid).get().then((value) {
+      await users.doc(currentUser!.uid).get().then((value) {
         final response = value.data() as Map<String, dynamic>;
 
         firebaseUser = UserModel(
@@ -178,11 +178,14 @@ class AuthService with ChangeNotifier {
           uid: response['uid'],
         );
         _user = firebaseUser;
-        notifyListeners();
+        print(firebaseUser!.email);
+        return firebaseUser;
       });
     } catch (e) {
       print("Error retriving data $e");
     }
+    // print(firebaseUser!.email);
+    return firebaseUser;
   }
 
   // ends

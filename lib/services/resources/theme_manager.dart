@@ -12,6 +12,17 @@ ThemeData quizTheme = ThemeData(
   scaffoldBackgroundColor: ColorManager.white,
   // scaffoldBackgroundColor: const Color.fromARGB(242, 253, 253, 253),
 
+  navigationBarTheme: NavigationBarThemeData(
+    backgroundColor: ColorManager.primary.withOpacity(0.3),
+    indicatorColor: ColorManager.white,
+    iconTheme: MaterialStateProperty.all(
+        const IconThemeData(color: Color.fromARGB(221, 57, 56, 56))),
+    labelTextStyle: MaterialStateProperty.all(
+      getMediumTextStyle(
+          color: const Color.fromARGB(221, 57, 56, 56), size: 14.0),
+    ),
+  ),
+
   // text theme
   textTheme: TextTheme(
     headline1: getBoldTextStyle(size: 30.0),

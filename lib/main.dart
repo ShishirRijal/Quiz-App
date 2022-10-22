@@ -1,9 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quiz_app/screens/home_screen.dart/home_screen.dart';
+import 'package:quiz_app/screens/quiz_detail_screen.dart/quiz_detail_screen.dart';
 import 'package:quiz_app/screens/screens.dart';
+import 'package:quiz_app/screens/topic_screen/topic_screen.dart';
 import 'package:quiz_app/screens/trial.dart';
-import 'package:quiz_app/services/quiz.dart';
+import 'package:quiz_app/services/quiz_controller.dart';
 import 'package:quiz_app/services/register_validation.dart';
 import 'package:quiz_app/services/services.dart';
 
@@ -51,7 +54,7 @@ class MyApp extends StatelessWidget {
                           ),
                         )
                       : (snapshot.data == true)
-                          ? const Quiz()
+                          ? const HomeScreen()
                           : const LoginScreen()),
         );
       }),

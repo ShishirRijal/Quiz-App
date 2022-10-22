@@ -66,8 +66,7 @@ class QuizController with ChangeNotifier {
 
   // Quiz time and completion controllers
 
-  // int get quizDuration => _questions.length * 10;
-  int get quizDuration => 3;
+  int get quizDuration => _questions.length * 10;
 
   // check if the the quiz is completed
   bool _isCompleted = false;
@@ -151,8 +150,11 @@ class QuizController with ChangeNotifier {
       Result("Correct", correctAnswers, Colors.green),
       Result("Wrong", wrongAnswers, Colors.red),
       Result("Total Questions", questions.length, ColorManager.primary),
-      Result("Achievement", (correctAnswers * 100) ~/ questions.length,
-          Colors.purpleAccent, '%'),
+      Result(
+          "Achievement",
+          noOfQuestions == 0 ? 0 : (correctAnswers * 100) ~/ noOfQuestions,
+          Colors.purpleAccent,
+          '%'),
     ];
   }
 

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:quiz_app/services/quiz.dart';
+import 'package:quiz_app/services/quiz_controller.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/quiz_model.dart';

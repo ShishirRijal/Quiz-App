@@ -3,7 +3,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:quiz_app/services/resources/routes_manager.dart';
 
-import '../services/quiz.dart';
+import '../services/quiz_controller.dart';
 import '../services/resources/style_manger.dart';
 
 class AnimatedTimer extends StatefulWidget {

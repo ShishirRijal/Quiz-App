@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quiz_app/services/quiz.dart';
+import 'package:quiz_app/services/quiz_controller.dart';
 import 'package:quiz_app/services/services.dart';
 
 import '../../models/report.dart';
@@ -57,8 +57,7 @@ class ResultScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     quiz.reset(); // reset all the values for next quiz
-                    Navigator.pushReplacementNamed(
-                        context, Routes.profileRoute);
+                    Navigator.pushReplacementNamed(context, Routes.topicScreen);
                   },
                   child: const Text("Continue..."),
                 ),
