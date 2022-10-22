@@ -21,6 +21,10 @@ class AuthService with ChangeNotifier {
     return _user;
   }
 
+  void refresh() {
+    notifyListeners();
+  }
+
   // Automatic login and logout with shared preferences
   Future<void> setAuthStatus() async {
     final prefs = await SharedPreferences.getInstance();
@@ -157,7 +161,7 @@ class AuthService with ChangeNotifier {
     }
   }
 
-  getUserData() {
+  void getUserData() {
     UserModel? firebaseUser;
 
     try {
@@ -174,8 +178,7 @@ class AuthService with ChangeNotifier {
           uid: response['uid'],
         );
         _user = firebaseUser;
-        // print(response);
-        // print(_user?.email);
+        notifyListeners();
       });
     } catch (e) {
       print("Error retriving data $e");

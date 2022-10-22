@@ -10,7 +10,7 @@ class ResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final quiz = Provider.of<Quiz>(context);
+    final quiz = Provider.of<QuizController>(context);
     final size = MediaQuery.of(context).size;
     final containerHeight = size.height * 0.5;
     return Scaffold(
@@ -56,7 +56,7 @@ class ResultScreen extends StatelessWidget {
                 padding: EdgeInsets.only(top: size.height * 0.2),
                 child: ElevatedButton(
                   onPressed: () {
-                    // TODO: quiz.reset();
+                    quiz.reset(); // reset all the values for next quiz
                     Navigator.pushReplacementNamed(
                         context, Routes.profileRoute);
                   },
@@ -83,7 +83,7 @@ class ResultStatsCard extends StatelessWidget {
   }) : super(key: key);
 
   final Size size;
-  final Quiz quiz;
+  final QuizController quiz;
 
   @override
   Widget build(BuildContext context) {

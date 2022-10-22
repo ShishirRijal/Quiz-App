@@ -14,7 +14,7 @@ class AnswerCard extends StatelessWidget {
   final double deviceWidth;
   @override
   Widget build(BuildContext context) {
-    final quiz = Provider.of<Quiz>(context);
+    final quiz = Provider.of<QuizController>(context);
     final bool isCorrect = quiz.isCorrect(index);
     final bool isMobile = deviceWidth < 480;
     final double scaleFactor = isMobile ? 1.0 : 1.5;

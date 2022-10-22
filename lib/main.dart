@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quiz_app/screens/result_screen.dart/result_screen.dart';
 import 'package:quiz_app/screens/screens.dart';
+import 'package:quiz_app/screens/trial.dart';
 import 'package:quiz_app/services/quiz.dart';
 import 'package:quiz_app/services/register_validation.dart';
 import 'package:quiz_app/services/services.dart';
@@ -31,8 +31,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<AuthService>(
           create: (context) => AuthService(),
         ),
-        ChangeNotifierProvider<Quiz>(
-          create: (context) => Quiz(),
+        ChangeNotifierProvider<QuizController>(
+          create: (context) => QuizController(),
         ),
       ],
       child: Builder(builder: (context) {
@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
                           ),
                         )
                       : (snapshot.data == true)
-                          ? const QuizScreen()
+                          ? const Quiz()
                           : const LoginScreen()),
         );
       }),
