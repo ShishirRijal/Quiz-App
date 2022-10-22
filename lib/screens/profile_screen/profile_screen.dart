@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:quiz_app/screens/profile_screen/components/profile_photo.dart';
 import 'package:quiz_app/services/resources/style_manger.dart';
 import 'package:quiz_app/widgets/loading_screen.dart';
 
 import '../../services/auth_services.dart';
+import 'components/stats_card.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -114,34 +117,9 @@ class ProfileScreen extends StatelessWidget {
                               ),
                               const SizedBox(height: 20.0),
 
-                              Container(
-                                margin: const EdgeInsets.only(bottom: 20.0),
-                                padding: const EdgeInsets.all(10.0),
-                                width: double.infinity,
-                                height: cardHeight,
-                                decoration: BoxDecoration(
-                                  color: ColorManager.primary.withOpacity(1),
-                                  borderRadius: BorderRadius.circular(20.0),
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Expanded(
-                                        child: Stats(
-                                            "All Time Best", 173, scaleFactor)),
-                                    const VerticalDivider(),
-                                    Expanded(
-                                        child: Stats(
-                                            "Questions", 78, scaleFactor)),
-                                    const VerticalDivider(),
-                                    Expanded(
-                                        child: Stats(
-                                            "Total Score", 768, scaleFactor)),
-                                  ],
-                                ),
-                              ),
+                              StatsCard(
+                                  cardHeight: cardHeight,
+                                  scaleFactor: scaleFactor),
                             ],
                           ),
                         ),
@@ -156,76 +134,13 @@ class ProfileScreen extends StatelessWidget {
                           color: ColorManager.primary,
                           borderRadius: BorderRadius.circular(20.0),
                         ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20.0),
-                          child: Image.asset('assets/images/ccr.jpg',
-                              fit: BoxFit.cover),
-                        ),
+                        child: ProfilePhoto(snapshot.data!.imgUrl),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-    );
-  }
-}
-
-class VerticalDivider extends StatelessWidget {
-  const VerticalDivider({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 5.0),
-        height: 65.0,
-        color: Colors.white70,
-        width: 1.0);
-  }
-}
-
-class Stats extends StatelessWidget {
-  const Stats(
-    this.title,
-    this.score,
-    this.scaleFactor, {
-    Key? key,
-  }) : super(key: key);
-  final String title;
-  final int score;
-  final double scaleFactor;
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          Icons.blur_circular,
-          color: ColorManager.white,
-          size: 30.0 * scaleFactor,
-        ),
-        FittedBox(
-          child: Text(
-            title,
-            textScaleFactor: scaleFactor,
-            maxLines: 1,
-            style: getRegularTextStyle(color: Colors.white70),
-          ),
-        ),
-        const SizedBox(height: 5.0),
-        FittedBox(
-          child: Text(
-            "$score",
-            textScaleFactor: scaleFactor,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: getBoldTextStyle(color: ColorManager.white),
-          ),
-        ),
-      ],
     );
   }
 }

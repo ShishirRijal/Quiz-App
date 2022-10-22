@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/screens/screens.dart';
+import 'package:quiz_app/screens/trial.dart';
 import 'package:quiz_app/services/resources/style_manger.dart';
 import '../topic_screen/topic_screen.dart';
 

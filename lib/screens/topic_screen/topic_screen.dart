@@ -3,7 +3,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../../models/quiz_topic.dart';
 import '../../services/services.dart';
-import '../quiz_detail_screen.dart/quiz_detail_screen.dart';
+import '../quiz_detail_screen/quiz_detail_screen.dart';
 
 class TopicScreen extends StatelessWidget {
   const TopicScreen({

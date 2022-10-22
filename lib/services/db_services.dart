@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_app/services/quiz_controller.dart';
 import 'package:http/http.dart' as http;
@@ -25,5 +26,35 @@ class DatabaseService {
           .toList()
           .cast<Question>();
     });
+  }
+
+  // upload data to the database
+  void registerUserData(User user, {String? name}) {
+    try {
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('users');
+      users.doc(user.uid).set({
+        'name': name ?? user.displayName,
+        'email': user.email,
+        'photoUrl': user.photoURL ?? "",
+        'uid': user.uid,
+        // 'lastSeen': DateTime.now(),
+      });
+    } catch (e) {
+      print("Error adding data $e");
+    }
+  }
+
+  void updatePicture(String imgUrl) {
+    try {
+      final user = FirebaseAuth.instance.currentUser!;
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('users');
+      users.doc(user.uid).set({
+        'photoUrl': imgUrl,
+      }, SetOptions(merge: true));
+    } catch (e) {
+      print("Error updating image $e");
+    }
   }
 }

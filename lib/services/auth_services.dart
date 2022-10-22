@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:quiz_app/models/user_model.dart';
+import 'package:quiz_app/services/db_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'helper_functions.dart';
 
@@ -72,8 +73,7 @@ class AuthService with ChangeNotifier {
     try {
       final firebaseUser = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      registerUserData(firebaseUser.user!,
-          name: fullname, photoUrl: "ahilexainahai");
+      DatabaseService().registerUserData(firebaseUser.user!, name: fullname);
       await setAuthStatus();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -115,7 +115,7 @@ class AuthService with ChangeNotifier {
 
       final firebaseUser =
           await FirebaseAuth.instance.signInWithCredential(credential);
-      registerUserData(firebaseUser.user!);
+      DatabaseService().registerUserData(firebaseUser.user!);
       await setAuthStatus();
     } on PlatformException catch (e) {
       if (e.code == "sign_in_canceled") {
@@ -145,21 +145,21 @@ class AuthService with ChangeNotifier {
   }
 
 //
-  void registerUserData(User user, {String? name, String? photoUrl}) {
-    try {
-      CollectionReference users =
-          FirebaseFirestore.instance.collection('users');
-      users.doc(user.uid).set({
-        'name': name ?? user.displayName,
-        'email': user.email,
-        'photoUrl': photoUrl ?? user.photoURL,
-        'uid': user.uid,
-        // 'lastSeen': DateTime.now(),
-      });
-    } catch (e) {
-      print("Error adding data $e");
-    }
-  }
+  // void registerUserData(User user, {String? name, String? photoUrl}) {
+  //   try {
+  //     CollectionReference users =
+  //         FirebaseFirestore.instance.collection('users');
+  //     users.doc(user.uid).set({
+  //       'name': name ?? user.displayName,
+  //       'email': user.email,
+  //       'photoUrl': photoUrl ?? user.photoURL,
+  //       'uid': user.uid,
+  //       // 'lastSeen': DateTime.now(),
+  //     });
+  //   } catch (e) {
+  //     print("Error adding data $e");
+  //   }
+  // }
 
   Future<UserModel?> getUserData() async {
     UserModel? firebaseUser;
