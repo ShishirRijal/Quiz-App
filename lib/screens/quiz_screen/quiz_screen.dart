@@ -1,71 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quiz_app/screens/result_screen.dart/result_screen.dart';
-import 'package:quiz_app/screens/screens.dart';
-import 'package:quiz_app/services/db_services.dart';
-import 'package:quiz_app/services/resources/style_manger.dart';
-import 'package:quiz_app/widgets/animated_timer.dart';
 
-import '../../services/quiz.dart';
+import '../../services/quiz_controller.dart';
+import '../../services/resources/style_manger.dart';
+import '../../widgets/animated_timer.dart';
+import '../result_screen.dart/result_screen.dart';
 import 'components/answer_card.dart';
 import 'components/question_card.dart';
 
-class Quiz extends StatelessWidget {
-  const Quiz({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final quiz = Provider.of<QuizController>(context);
-    // Once the quiz time is complete, go to the result screen
-
-    return FutureBuilder(
-        future: DatabaseService().getQuestion(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            quiz.setQuestions(snapshot.data!);
-
-            // return Text(snapshot.data!.length.toString());
-            return const QuizScreen();
-          } else {
-            return const LoadingScreen();
-////////
-          }
-        });
-  }
-}
-
-class LoadingScreen extends StatelessWidget {
-  const LoadingScreen({
-    Key? key,
-    this.title,
-  }) : super(key: key);
-  final String? title;
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: ColorManager.primary,
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const CircularProgressIndicator(
-                color: ColorManager.white,
-                strokeWidth: 3.0,
-              ),
-              const SizedBox(height: 20.0),
-              Text(title ?? "Loading Questions...",
-                  style: getBoldTextStyle(size: 20.0, color: Colors.white)),
-            ],
-          ),
-        ));
-  }
-}
-
-class QuizScreen extends StatelessWidget {
+class QuizScreen extends StatefulWidget {
   const QuizScreen({
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<QuizScreen> createState() => _QuizScreenState();
+}
+
+class _QuizScreenState extends State<QuizScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -76,9 +28,14 @@ class QuizScreen extends StatelessWidget {
     final quiz = Provider.of<QuizController>(context);
 
     Future.delayed(Duration(seconds: quiz.quizDuration)).then((value) {
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => const ResultScreen()));
+      // check if is mounted
+      if (mounted) {
+        // if it is mounted then go to result screen, time is off bro..
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const ResultScreen()));
+      }
     });
+
     return Scaffold(
       body: quiz.isCompleted
           ? const ResultScreen()
