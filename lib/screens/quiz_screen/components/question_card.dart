@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../services/quiz.dart';
+import '../../../services/quiz_controller.dart';
 import '../../../services/services.dart';
 import 'labelled_chip.dart';
 
