@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quiz_app/services/db_services.dart';
 import 'package:quiz_app/services/quiz.dart';
 import 'package:quiz_app/services/resources/style_manger.dart';
 
@@ -11,10 +12,10 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthService>(context);
+    auth.getUserData();
     final user = auth.user;
     final isMobile = MediaQuery.of(context).size.width < 480;
     final double scaleFactor = isMobile ? 1.0 : 1.5;
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Stack(
@@ -171,7 +172,7 @@ class Stats extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(
-          Icons.star_border,
+          Icons.blur_circular,
           color: ColorManager.white,
           size: 30.0 * scaleFactor,
         ),
