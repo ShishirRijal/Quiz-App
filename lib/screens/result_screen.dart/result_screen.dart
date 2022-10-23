@@ -4,6 +4,7 @@ import 'package:quiz_app/services/quiz_controller.dart';
 import 'package:quiz_app/services/services.dart';
 
 import '../../models/report.dart';
+import '../../services/db_services.dart';
 
 class ResultScreen extends StatelessWidget {
   const ResultScreen({Key? key}) : super(key: key);
@@ -13,6 +14,10 @@ class ResultScreen extends StatelessWidget {
     final quiz = Provider.of<QuizController>(context);
     final size = MediaQuery.of(context).size;
     final containerHeight = size.height * 0.5;
+    // let's update the score in the database
+    DatabaseService()
+        .updateUserReport(quiz.topic, quiz.correctAnswers, quiz.noOfQuestions);
+
     return Scaffold(
       body: Stack(
         clipBehavior: Clip.none,
@@ -57,7 +62,7 @@ class ResultScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     quiz.reset(); // reset all the values for next quiz
-                    Navigator.pushReplacementNamed(context, Routes.topicScreen);
+                    Navigator.pushReplacementNamed(context, Routes.topicRoute);
                   },
                   child: const Text("Continue..."),
                 ),

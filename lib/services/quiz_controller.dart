@@ -1,8 +1,4 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
 import '../models/quiz_model.dart';
 import '../models/report.dart';
 import 'resources/style_manger.dart';
@@ -27,6 +23,7 @@ class QuizController with ChangeNotifier {
     _isCompleted = false;
     _currentIndex = 0;
     _isAnswered = false;
+    _topic = "";
   }
 
 /* Quiz Controllers */
@@ -84,6 +81,13 @@ class QuizController with ChangeNotifier {
     notifyListeners();
   }
 
+// topic controller
+  String _topic = "";
+  String get topic => _topic;
+  void setTopic(String topic) {
+    _topic = topic;
+  }
+
 // get the option
   String getOption(int index) {
     return questions[currentIndex].answers[index];
@@ -130,7 +134,7 @@ class QuizController with ChangeNotifier {
         : changeScore(false);
 
     // let's change the question after 1 second
-    Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(const Duration(milliseconds: 700), () {
       // reset tap for new questions
       _isTapped = false;
 
@@ -157,110 +161,4 @@ class QuizController with ChangeNotifier {
           '%'),
     ];
   }
-
-  // static const List<Question> _questions = [
-  //   Question(
-  //     id: 'longest-river-in-world',
-  //     questionText: "Which is the longest river of the world?",
-  //     answers: ['Nile', 'Ganga', 'Blue Tue', 'Dainy,'],
-  //     correctAnswerIndex: 0,
-  //   ),
-  //   Question(
-  //     id: 'gautam-buddha-birth-place',
-  //     questionText: "Which one is the birth place of Gautam Buddha?",
-  //     answers: [
-  //       'Bahra - India',
-  //       'Lumbini - Nepal',
-  //       'Wuhan - China ',
-  //       'Bangkok - Thailand',
-  //     ],
-  //     correctAnswerIndex: 1,
-  //   ),
-  //   Question(
-  //       id: 'ceo-of-google',
-  //       questionText: "Who is the CEO of GOOGLE?",
-  //       answers: [
-  //         'Sundar Paneru',
-  //         'Pramesh Sundar',
-  //         'Sundar Pichai',
-  //         'Pichmesh Sundar',
-  //       ],
-  //       correctAnswerIndex: 2),
-  //   Question(
-  //     id: 'most-reputed-ioe-college',
-  //     questionText:
-  //         "Which the the most preveliged engineering campus of Nepal?",
-  //     answers: [
-  //       'Pulchowk Campus',
-  //       'Paschimanchal Campus',
-  //       'Purwanchal Campus',
-  //       'Thapathali Campus',
-  //     ],
-  //     correctAnswerIndex: 0,
-  //   ),
-  // ];
-
-// get the questions from the database....
-
-  // Future<void> getQuestions() async {
-  //   await http.get(url).then((response) {
-  //     if (response.statusCode == 200) {
-  //       final data = json.decode(response.body) as Map<String, dynamic>;
-  //       data.forEach((key, value) {
-  //         _questions.add(Question(
-  //           id: key,
-  //           questionText: value['questionText'],
-  //           answers: [
-  //             value['answers'][0],
-  //             value['answers'][1],
-  //             value['answers'][2],
-  //             value['answers'][3],
-  //           ],
-  //           correctAnswerIndex: value['correctAnswerIndex'],
-  //         ));
-  //       });
-  //       notifyListeners();
-  //     }
-  //   });
-  // }
-
-  // Future<List<Question>> getQuestions() async {
-  //   // List<Question> result = [];
-  //   await http.get(url).then((response) {
-  //     final data = json.decode(response.body) as Map<String, dynamic>;
-  //     return data.forEach(
-  //       (key, value) => Question(
-  //         id: key,
-  //         questionText: value['questionText'],
-  //         answers: [
-  //           value['answers'][0],
-  //           value['answers'][1],
-  //           value['answers'][2],
-  //           value['answers'][3],
-  //         ],
-  //         correctAnswerIndex: value['correctAnswerIndex'],
-  //       ),
-  //     );
-
-  //     // notifyListeners();
-  //   });
-  //   // return result;
-  // }
-
-  // post questions to the database...
-  Future<void> addQuestion(Question question) async {
-    await http.post(url,
-        body: json.encode({
-          "questionText": question.questionText,
-          "answers": [
-            question.answers[0],
-            question.answers[1],
-            question.answers[2],
-            question.answers[3],
-          ],
-          "correctAnswerIndex": question.correctAnswerIndex,
-        }));
-  }
-
-  // ends
 }

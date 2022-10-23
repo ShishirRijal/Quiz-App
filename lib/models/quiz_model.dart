@@ -18,10 +18,4 @@ class Question {
       correctAnswerIndex: data['correctAnswerIndex'],
     );
   }
-  // Question.fromMap(Map data) {
-  //   id = data['id'];
-  //   questionText = data['questionText'];
-  //   answers = data['answers'];
-  //   correctAnswerIndex = data['correctAnswerIndex'];
-  // }
 }

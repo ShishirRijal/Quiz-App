@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import "dart:io";
-import 'package:flutter/material.dart';
 import 'package:quiz_app/services/db_services.dart';
-import 'package:quiz_app/services/services.dart';
+
+import '../../../services/resources/style_manger.dart';
+import '../../../widgets/placeholder_image.dart';
 
 class ProfilePhoto extends StatefulWidget {
   const ProfilePhoto(this.imgUrl, {Key? key}) : super(key: key);
@@ -31,19 +32,14 @@ class _ProfilePhotoState extends State<ProfilePhoto> {
       }
       imgName = image.name;
       File? img = File(image.path);
-      print("Image selected");
       // now crop..
       img = await cropImage(img);
-      print("cropped");
+
       setState(() {
         isUploaded = true;
         _image = img;
       });
-
-      print("image set called");
-      print("now uploading");
       await uploadFile();
-      print("Done uploading");
     } catch (e) {
       print("Error in picking image => $e"); // TODO: handle it
     }
@@ -64,14 +60,13 @@ class _ProfilePhotoState extends State<ProfilePhoto> {
       String userId = FirebaseAuth.instance.currentUser!.uid;
       if (_image == null) return;
       final path = 'images/$userId/$imgName';
-      print("Path= $path");
+
       // final file = _image!.path;
       final ref = FirebaseStorage.instance.ref().child(path);
       final snapshot = await ref.putFile(_image!).whenComplete(() => null);
       final imgUrl = await snapshot.ref.getDownloadURL();
-      print(imgUrl);
+
       DatabaseService().updatePicture(imgUrl);
-      print("database updated");
     } catch (e) {
       print("Error in uploading image => $e");
     }
@@ -89,7 +84,7 @@ class _ProfilePhotoState extends State<ProfilePhoto> {
             ),
             context: context,
             builder: (context) {
-              return Container(
+              return SizedBox(
                 height: 140.0,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -105,7 +100,7 @@ class _ProfilePhotoState extends State<ProfilePhoto> {
                         Navigator.pop(context);
                       },
                     ),
-                    Divider(
+                    const Divider(
                       thickness: 1.5,
                     ),
                     ListTile(
@@ -124,8 +119,8 @@ class _ProfilePhotoState extends State<ProfilePhoto> {
       child: Container(
         height: 250.0,
         width: 250.0,
-        decoration:
-            const BoxDecoration(shape: BoxShape.circle, color: Colors.grey),
+        decoration: const BoxDecoration(
+            color: ColorManager.primary, shape: BoxShape.circle),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20.0),
           child: isUploaded
@@ -137,20 +132,4 @@ class _ProfilePhotoState extends State<ProfilePhoto> {
       ),
     );
   }
-}
-
-Widget placeholderImage() {
-  return Container(
-    color: Colors.grey,
-    child: Align(
-        alignment: Alignment.bottomCenter,
-        child: Container(
-            alignment: Alignment.center,
-            height: 50.0,
-            color: Colors.black38,
-            child: FittedBox(
-              child: Text("Upload Image",
-                  style: getRegularTextStyle(color: Colors.grey)),
-            ))),
-  );
 }

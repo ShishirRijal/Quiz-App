@@ -7,19 +7,20 @@ import '../../services/quiz_controller.dart';
 import '../../widgets/loading_screen.dart';
 
 class Quiz extends StatelessWidget {
-  const Quiz({super.key});
+  const Quiz({super.key, required this.topicId});
+  final String topicId;
 
   @override
   Widget build(BuildContext context) {
     final quiz = Provider.of<QuizController>(context);
+    quiz.setTopic(topicId);
     // Once the quiz time is complete, go to the result screen
 
     return FutureBuilder(
-        future: DatabaseService().getQuestion(),
+        future: DatabaseService().getQuestion(topicId),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             quiz.setQuestions(snapshot.data!);
-
             // return Text(snapshot.data!.length.toString());
             return const QuizScreen();
           } else {

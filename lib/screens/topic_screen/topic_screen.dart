@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:quiz_app/services/db_services.dart';
+import 'package:quiz_app/widgets/loading_screen.dart';
 
 import '../../models/quiz_topic.dart';
 import '../../services/services.dart';
@@ -12,41 +14,44 @@ class TopicScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: Container(),
-      appBar: AppBar(
-        title: const Text("Quizzey"),
-        centerTitle: true,
-        // automaticallyImplyLeading: false,
-      ),
-      body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 10.0,
-            vertical: 10.0,
-          ),
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: StaggeredGrid.count(
-              axisDirection: AxisDirection.down,
-              crossAxisCount: 2,
-              mainAxisSpacing: 10.0,
-              crossAxisSpacing: 10.0,
-              children: _staggeredGridItems(),
-            ),
-          ),
-        ),
-      ),
+    return FutureBuilder(
+      future: DatabaseService().fetchQuizTopics(),
+      builder: (context, snapshot) => snapshot.data != null
+          ? Scaffold(
+              appBar: AppBar(
+                title: const Text("Quizzey"),
+                centerTitle: true,
+                automaticallyImplyLeading: false,
+              ),
+              body: SafeArea(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10.0,
+                    vertical: 10.0,
+                  ),
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: StaggeredGrid.count(
+                      axisDirection: AxisDirection.down,
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 10.0,
+                      crossAxisSpacing: 10.0,
+                      children: _staggeredGridItems(snapshot.data!),
+                    ),
+                  ),
+                ),
+              ),
+            )
+          : const LoadingScreen(
+              title: "Loading quiz topics...\nPlease keep patience"),
     );
   }
 }
 
-///
-
-List<StaggeredGridTile> _staggeredGridItems() {
+List<StaggeredGridTile> _staggeredGridItems(List<QuizTopic> topics) {
   int count = 0;
   double mainAxisCount = 1;
-  return quizTopic.map((topic) {
+  return topics.map((topic) {
     if (count % 4 == 0) {
       mainAxisCount = 1.4;
     } else if (count % 3 == 0) {

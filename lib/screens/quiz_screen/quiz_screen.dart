@@ -72,21 +72,32 @@ class _QuizScreenState extends State<QuizScreen> {
                       Padding(
                         padding: EdgeInsets.fromLTRB(
                             padding, smallDevicePadding, padding, padding),
-                        child: Column(
-                          // crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            AnswerCard(0, deviceWidth: size.width),
-                            SizedBox(height: isMobile ? 15.0 : 20.0),
-                            AnswerCard(1, deviceWidth: size.width),
-                            SizedBox(height: isMobile ? 15.0 : 20.0),
-                            AnswerCard(2, deviceWidth: size.width),
-                            SizedBox(height: isMobile ? 15.0 : 20.0),
-                            AnswerCard(3, deviceWidth: size.width),
-                            SizedBox(height: isMobile ? 15.0 : 20.0),
 
-                            //
-                          ],
+                        child: ListView.separated(
+                          separatorBuilder: (context, index) =>
+                              SizedBox(height: isMobile ? 15.0 : 20.0),
+                          itemCount: 4,
+                          shrinkWrap: true,
+                          physics: const PageScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return AnswerCard(index, deviceWidth: size.width);
+                          },
                         ),
+
+                        // child: Column(
+                        //   // crossAxisAlignment: CrossAxisAlignment.center,
+                        //   children: [
+                        //     SizedBox(height: isMobile ? 15.0 : 20.0),
+                        //     AnswerCard(1, deviceWidth: size.width),
+                        //     SizedBox(height: isMobile ? 15.0 : 20.0),
+                        //     AnswerCard(2, deviceWidth: size.width),
+                        //     SizedBox(height: isMobile ? 15.0 : 20.0),
+                        //     AnswerCard(3, deviceWidth: size.width),
+                        //     SizedBox(height: isMobile ? 15.0 : 20.0),
+
+                        //     //
+                        //   ],
+                        // ),
                       ),
                     ],
                   ),

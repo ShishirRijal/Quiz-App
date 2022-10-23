@@ -10,7 +10,7 @@ class Stats extends StatelessWidget {
     Key? key,
   }) : super(key: key);
   final String title;
-  final int score;
+  final String score;
   final double scaleFactor;
   @override
   Widget build(BuildContext context) {
@@ -18,27 +18,40 @@ class Stats extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(
-          Icons.blur_circular,
-          color: ColorManager.white,
-          size: 30.0 * scaleFactor,
-        ),
+        // Icon(
+        //   Icons.blur_circular,
+        //   color: ColorManager.white,
+        //   size: 30.0 * scaleFactor,
+        // ),
+
         FittedBox(
-          child: Text(
-            title,
+          child: RichText(
             textScaleFactor: scaleFactor,
-            maxLines: 1,
-            style: getRegularTextStyle(color: Colors.white70),
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: score.split('/').first,
+                  style:
+                      getBoldTextStyle(color: ColorManager.white, size: 30.0),
+                ),
+                TextSpan(
+                  text: '/${score.split('/').last}',
+                  style: getRegularTextStyle(
+                      color: ColorManager.white, size: 18.0),
+                ),
+              ],
+            ),
           ),
         ),
         const SizedBox(height: 5.0),
+
         FittedBox(
           child: Text(
-            "$score",
+            title.replaceAll(" ", "\n"),
+            textAlign: TextAlign.center,
             textScaleFactor: scaleFactor,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: getBoldTextStyle(color: ColorManager.white),
+            maxLines: 2,
+            style: getRegularTextStyle(color: Colors.white70, size: 17.0),
           ),
         ),
       ],

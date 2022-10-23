@@ -116,7 +116,7 @@ class AuthService with ChangeNotifier {
       final firebaseUser =
           await FirebaseAuth.instance.signInWithCredential(credential);
       DatabaseService().registerUserData(firebaseUser.user!);
-      await setAuthStatus();
+      await setAuthStatus().then((value) => notifyListeners());
     } on PlatformException catch (e) {
       if (e.code == "sign_in_canceled") {
         print("Sign in cancelled");
@@ -126,12 +126,10 @@ class AuthService with ChangeNotifier {
     } catch (e) {
       print(e);
     }
-
-    notifyListeners();
   }
 
   // signout
-  signOut() async {
+  Future<void> signOut() async {
     //  Check the existence of google sign in
 
     var methods =
@@ -144,24 +142,8 @@ class AuthService with ChangeNotifier {
     notifyListeners();
   }
 
-//
-  // void registerUserData(User user, {String? name, String? photoUrl}) {
-  //   try {
-  //     CollectionReference users =
-  //         FirebaseFirestore.instance.collection('users');
-  //     users.doc(user.uid).set({
-  //       'name': name ?? user.displayName,
-  //       'email': user.email,
-  //       'photoUrl': photoUrl ?? user.photoURL,
-  //       'uid': user.uid,
-  //       // 'lastSeen': DateTime.now(),
-  //     });
-  //   } catch (e) {
-  //     print("Error adding data $e");
-  //   }
-  // }
-
-  Future<UserModel?> getUserData() async {
+  // get user data
+  Future<void> getUserData() async {
     UserModel? firebaseUser;
 
     try {
@@ -179,13 +161,13 @@ class AuthService with ChangeNotifier {
         );
         _user = firebaseUser;
         print(firebaseUser!.email);
-        return firebaseUser;
+        // return firebaseUser;
       });
     } catch (e) {
       print("Error retriving data $e");
     }
     // print(firebaseUser!.email);
-    return firebaseUser;
+    // return firebaseUser;
   }
 
   // ends

@@ -12,18 +12,24 @@ class ForgotPasswordScreen extends StatelessWidget {
     return Scaffold(
         body: SafeArea(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 40.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
         child: Responsive(
-          mobile: Column(
-            children: [
-              // lotties animation
-              Expanded(child: LottieBuilder.asset(AssetManager.forgotPassword)),
-              const SizedBox(height: 20.0),
-              const Expanded(child: MessageAndInput()),
-              const SizedBox(height: 20.0),
+          mobile: SingleChildScrollView(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                children: [
+                  // lotties animation
+                  Expanded(
+                      child: LottieBuilder.asset(AssetManager.forgotPassword)),
+                  const SizedBox(height: 20.0),
+                  const Expanded(child: MessageAndInput()),
+                  // const SizedBox(height: 20.0),
 
-              // login
-            ],
+                  // login
+                ],
+              ),
+            ),
           ),
           tablet: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,

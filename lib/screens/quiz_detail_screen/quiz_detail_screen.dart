@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/models/quiz_topic.dart';
-import 'package:quiz_app/services/resources/routes_manager.dart';
 import 'package:quiz_app/services/resources/style_manger.dart';
+
+import '../quiz_screen/quiz.dart';
 
 class QuizDetailScreen extends StatelessWidget {
   const QuizDetailScreen(this.topic, {super.key});
@@ -49,7 +50,10 @@ class QuizDetailScreen extends StatelessWidget {
               width: size.width * 0.9,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, Routes.quizRoute);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Quiz(topicId: topic.id)));
                 },
                 child: const Text("Start Quiz"),
               ),
